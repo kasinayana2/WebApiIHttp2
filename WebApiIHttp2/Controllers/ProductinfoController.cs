@@ -8,10 +8,10 @@ using WebApiIHttp2.Models;
 
 namespace WebApiIHttp2.Controllers
 {
-    public class ProductController : ApiController
+    public class ProductinfoController : ApiController
     {
         DatabaseConnection db;
-        public ProductController()
+        public ProductinfoController()
         {
             db = new DatabaseConnection();
         }
@@ -19,30 +19,30 @@ namespace WebApiIHttp2.Controllers
         {
             return db.Products.ToList();
         }
-        public HttpResponseMessage GetById(int id)
+        public IHttpActionResult GetById(int id)
         {
             var Product = db.Products.Find(id);
-            if(Product == null)
+            if (Product == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, id);
+                return NotFound();
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.OK,Product);
+                return Ok(Product);
             }
         }
         [HttpPost]
-        public HttpResponseMessage AddProduct(Product value)
+        public IHttpActionResult AddProduct(Product value)
         {
             if (value != null)
             {
                 db.Products.Add(value);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.Created, value);
+                return Created(Request.RequestUri, value);
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, value);
+                return BadRequest();
             }
         }
     }
