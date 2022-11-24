@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using WebApiIHttp2.CustomActionResult;
 using WebApiIHttp2.Models;
 
 namespace WebApiIHttp2.Controllers
@@ -43,6 +44,19 @@ namespace WebApiIHttp2.Controllers
             else
             {
                 return BadRequest();
+            }
+        }
+        
+        public IHttpActionResult GetNameById(int id)
+        {
+            var Product = db.Products.Find(id);
+            if (Product == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return new TestResult(Product.ProductName, Request);
             }
         }
     }
