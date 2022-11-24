@@ -15,21 +15,21 @@ namespace WebApiIHttp2.Controllers
         {
             db = new DatabaseConnection();
         }
-        [Route ("Product/GetAll")]
-        [AcceptVerbs("Get")]
         public IEnumerable<Product> GetAll()
         {
             return db.Products.ToList();
         }
-        [Route ("Product/Get-id/{id:int}")]
-        public Product GetById(int id)
+        public HttpResponseMessage GetById(int id)
         {
-            return db.Products.Find(id);
-        }
-        [Route("Product/Get-name/{name:maxlength(20)}")]
-        public Product GetName(string name)
-        {
-            return db.Products.Where(p => p.ProductName == name).FirstOrDefault();
+            var Product = db.Products.Find(id);
+            if(Product == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, id);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.OK,Product);
+            }
         }
         [HttpPost]
         public void AddProduct(Product value)
